@@ -1,0 +1,378 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             x:Class="CurrencyConverter.MainPage"
+             Shell.NavBarIsVisible="False"
+             BackgroundColor="#F1F5F9">
+
+    <Shell.BackgroundColor>
+        <Color>#4F46E5</Color>
+    </Shell.BackgroundColor>
+
+    <Grid>
+    <ScrollView>
+        <VerticalStackLayout Padding="22,32,22,24" Spacing="18">
+
+            <!-- Header with fade-in animation -->
+            <VerticalStackLayout Spacing="4">
+                <VerticalStackLayout.Behaviors>
+                    <toolkit:AnimationBehavior>
+                        <toolkit:AnimationBehavior.AnimationType>
+                            <toolkit:FadeAnimation Opacity="1" Length="600" />
+                        </toolkit:AnimationBehavior.AnimationType>
+                    </toolkit:AnimationBehavior>
+                </VerticalStackLayout.Behaviors>
+
+                <Label Text="💱  Currency Converter"
+                       FontSize="28"
+                       FontAttributes="Bold"
+                       TextColor="#172033"
+                       SemanticProperties.HeadingLevel="Level1" />
+                <Label Text="Convert currencies with the latest available rates."
+                       FontSize="14"
+                       TextColor="#718096" />
+            </VerticalStackLayout>
+
+            <!-- Main conversion card with shadow -->
+            <Border Padding="20"
+                    BackgroundColor="White"
+                    Stroke="#E2E8F0"
+                    StrokeThickness="1"
+                    StrokeShape="RoundRectangle 20">
+                <Border.Shadow>
+                    <Shadow Brush="#20000000"
+                            Offset="0,4"
+                            Radius="16"
+                            Opacity="0.8" />
+                </Border.Shadow>
+                <VerticalStackLayout Spacing="16">
+
+                    <!-- Amount input -->
+                    <VerticalStackLayout Spacing="6">
+                        <Label Text="AMOUNT"
+                               FontSize="12"
+                               FontAttributes="Bold"
+                               TextColor="#718096" />
+                        <Border BackgroundColor="#F8FAFC"
+                                Stroke="#E2E8F0"
+                                StrokeThickness="1"
+                                StrokeShape="RoundRectangle 12"
+                                Padding="4,0">
+                            <Entry x:Name="txtAmount"
+                                   Text="1"
+                                   Keyboard="Numeric"
+                                   FontSize="20"
+                                   TextColor="#172033"
+                                   BackgroundColor="Transparent"
+                                   ClearButtonVisibility="WhileEditing"
+                                   MinimumHeightRequest="50"
+                                   TextChanged="InputChanged"
+                                   SemanticProperties.Description="Amount to convert">
+                            </Entry>
+                        </Border>
+                        <VerticalStackLayout Spacing="6">
+                            <Label Text="Quick amounts"
+                                   FontSize="12"
+                                   TextColor="#718096" />
+                            <HorizontalStackLayout Spacing="8">
+                                <Button Text="1"
+                                        CommandParameter="1"
+                                        Clicked="SetQuickAmount"
+                                        BackgroundColor="#F1F5F9"
+                                        TextColor="#475569"
+                                        FontSize="12"
+                                        Padding="12,6"
+                                        MinimumHeightRequest="34"
+                                        CornerRadius="10" />
+                                <Button Text="10"
+                                        CommandParameter="10"
+                                        Clicked="SetQuickAmount"
+                                        BackgroundColor="#F1F5F9"
+                                        TextColor="#475569"
+                                        FontSize="12"
+                                        Padding="12,6"
+                                        MinimumHeightRequest="34"
+                                        CornerRadius="10" />
+                                <Button Text="100"
+                                        CommandParameter="100"
+                                        Clicked="SetQuickAmount"
+                                        BackgroundColor="#F1F5F9"
+                                        TextColor="#475569"
+                                        FontSize="12"
+                                        Padding="12,6"
+                                        MinimumHeightRequest="34"
+                                        CornerRadius="10" />
+                            </HorizontalStackLayout>
+                        </VerticalStackLayout>
+                    </VerticalStackLayout>
+
+                    <!-- Currency selectors -->
+                    <VerticalStackLayout Spacing="8">
+                        <Label Text="FROM"
+                               FontSize="12"
+                               FontAttributes="Bold"
+                               TextColor="#718096" />
+                        <Border x:Name="fromCurrencyButton"
+                                BackgroundColor="#F8FAFC"
+                                Stroke="#E2E8F0"
+                                StrokeThickness="1"
+                                StrokeShape="RoundRectangle 12"
+                                Padding="8,0">
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="OpenFromCurrencySelector" />
+                            </Border.GestureRecognizers>
+                            <Grid ColumnDefinitions="Auto,*,Auto" MinimumHeightRequest="54">
+                                <Image x:Name="imgFromFlag"
+                                       WidthRequest="36"
+                                       HeightRequest="24"
+                                       Aspect="AspectFill"
+                                       VerticalOptions="Center"
+                                       Margin="0,0,12,0" />
+                                <Label x:Name="txtFromCurrency"
+                                       Grid.Column="1"
+                                       Text="Select currency"
+                                       FontSize="16"
+                                       TextColor="#172033"
+                                       VerticalTextAlignment="Center" />
+                                <Label Grid.Column="2"
+                                       Text="⌄"
+                                       FontSize="20"
+                                       TextColor="#718096"
+                                       VerticalTextAlignment="Center"
+                                       Margin="8,0,4,0" />
+                            </Grid>
+                        </Border>
+
+                        <!-- Swap button with animation -->
+                        <Button x:Name="btnSwap"
+                                Text="⇅  Swap currencies"
+                                Clicked="SwapCurrencies"
+                                BackgroundColor="#EEF2FF"
+                                TextColor="#4F46E5"
+                                FontSize="15"
+                                FontAttributes="Bold"
+                                CornerRadius="12"
+                                MinimumHeightRequest="48"
+                                SemanticProperties.Hint="Swap the source and destination currencies">
+                            <Button.Behaviors>
+                                <toolkit:AnimationBehavior EventName="Clicked">
+                                    <toolkit:AnimationBehavior.AnimationType>
+                                        <toolkit:FadeAnimation Opacity="0.5" Length="150" />
+                                    </toolkit:AnimationBehavior.AnimationType>
+                                </toolkit:AnimationBehavior>
+                            </Button.Behaviors>
+                        </Button>
+
+                        <Label Text="TO"
+                               FontSize="12"
+                               FontAttributes="Bold"
+                               TextColor="#718096" />
+                        <Border x:Name="toCurrencyButton"
+                                BackgroundColor="#F8FAFC"
+                                Stroke="#E2E8F0"
+                                StrokeThickness="1"
+                                StrokeShape="RoundRectangle 12"
+                                Padding="8,0">
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="OpenToCurrencySelector" />
+                            </Border.GestureRecognizers>
+                            <Grid ColumnDefinitions="Auto,*,Auto" MinimumHeightRequest="54">
+                                <Image x:Name="imgToFlag"
+                                       WidthRequest="36"
+                                       HeightRequest="24"
+                                       Aspect="AspectFill"
+                                       VerticalOptions="Center"
+                                       Margin="0,0,12,0" />
+                                <Label x:Name="txtToCurrency"
+                                       Grid.Column="1"
+                                       Text="Select currency"
+                                       FontSize="16"
+                                       TextColor="#172033"
+                                       VerticalTextAlignment="Center" />
+                                <Label Grid.Column="2"
+                                       Text="⌄"
+                                       FontSize="20"
+                                       TextColor="#718096"
+                                       VerticalTextAlignment="Center"
+                                       Margin="8,0,4,0" />
+                            </Grid>
+                        </Border>
+                    </VerticalStackLayout>
+
+                    <!-- Result display with gradient-like background -->
+                    <Border x:Name="resultCard"
+                            Padding="20,22"
+                            BackgroundColor="#EEF2FF"
+                            StrokeThickness="0"
+                            StrokeShape="RoundRectangle 16">
+                        <Border.Shadow>
+                            <Shadow Brush="#204F46E5"
+                                    Offset="0,2"
+                                    Radius="8"
+                                    Opacity="0.6" />
+                        </Border.Shadow>
+                        <VerticalStackLayout Spacing="6">
+                            <Label Text="CONVERTED AMOUNT"
+                                   FontSize="11"
+                                   FontAttributes="Bold"
+                                   TextColor="#718096"
+                                   HorizontalTextAlignment="Center" />
+                            <Label x:Name="txtResult"
+                                   Text="Loading rates…"
+                                   FontSize="30"
+                                   FontAttributes="Bold"
+                                   TextColor="#4F46E5"
+                                   HorizontalTextAlignment="Center"
+                                   LineBreakMode="WordWrap" />
+                            <Label x:Name="txtRate"
+                                   Text=""
+                                   FontSize="13"
+                                   TextColor="#64748B"
+                                   HorizontalTextAlignment="Center" />
+                        </VerticalStackLayout>
+                    </Border>
+
+                    <Label x:Name="txtUpdated"
+                           Text="Loading exchange rates…"
+                           FontSize="12"
+                           TextColor="#718096"
+                           HorizontalTextAlignment="Center" />
+                </VerticalStackLayout>
+            </Border>
+
+            <!-- History section with shadow -->
+            <VerticalStackLayout Spacing="10">
+                <Label Text="📋  Recent conversions"
+                       FontSize="18"
+                       FontAttributes="Bold"
+                       TextColor="#172033" />
+                <Border BackgroundColor="White"
+                        Stroke="#E2E8F0"
+                        StrokeThickness="1"
+                        StrokeShape="RoundRectangle 16"
+                        Padding="6">
+                    <Border.Shadow>
+                        <Shadow Brush="#18000000"
+                                Offset="0,2"
+                                Radius="10"
+                                Opacity="0.6" />
+                    </Border.Shadow>
+                    <CollectionView x:Name="lstHistory"
+                                    ItemsSource="{Binding HistoryEntries}"
+                                    SelectionMode="Single"
+                                    SelectionChanged="HistorySelectionChanged"
+                                    MaximumHeightRequest="260">
+                        <CollectionView.EmptyView>
+                            <VerticalStackLayout Padding="20" Spacing="6"
+                                                 HorizontalOptions="Center"
+                                                 VerticalOptions="Center">
+                                <Label Text="🕐"
+                                       FontSize="28"
+                                       HorizontalTextAlignment="Center" />
+                                <Label Text="Your recent conversions will appear here."
+                                       Padding="14"
+                                       FontSize="13"
+                                       TextColor="#A0AEC0"
+                                       HorizontalTextAlignment="Center" />
+                            </VerticalStackLayout>
+                        </CollectionView.EmptyView>
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate>
+                                <Border Margin="4,4"
+                                        Padding="14,12"
+                                        BackgroundColor="#FAFBFC"
+                                        Stroke="#EDF2F7"
+                                        StrokeThickness="1"
+                                        StrokeShape="RoundRectangle 12">
+                                    <Grid ColumnDefinitions="Auto,*">
+                                        <Label Text="→"
+                                               FontSize="16"
+                                               TextColor="#4F46E5"
+                                               VerticalTextAlignment="Center"
+                                               Margin="0,0,10,0" />
+                                        <Label Grid.Column="1"
+                                               Text="{Binding DisplayText}"
+                                               FontSize="13"
+                                               TextColor="#172033"
+                                               VerticalTextAlignment="Center"
+                                               LineBreakMode="WordWrap" />
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </Border>
+            </VerticalStackLayout>
+        </VerticalStackLayout>
+    </ScrollView>
+
+        <Grid x:Name="currencySelectorOverlay"
+              IsVisible="False"
+              ZIndex="10"
+              BackgroundColor="#80000000"
+              Padding="24">
+            <Border BackgroundColor="White"
+                    Stroke="#E2E8F0"
+                    StrokeThickness="1"
+                    StrokeShape="RoundRectangle 20"
+                    Padding="16"
+                    VerticalOptions="Center"
+                    MaximumHeightRequest="560">
+                <Grid RowDefinitions="Auto,Auto,*" RowSpacing="12">
+                    <Grid ColumnDefinitions="*,Auto">
+                        <Label Text="Choose a currency"
+                               FontSize="20"
+                               FontAttributes="Bold"
+                               TextColor="#172033"
+                               VerticalTextAlignment="Center" />
+                        <Button Grid.Column="1"
+                                Text="✕"
+                                Clicked="CloseCurrencySelector"
+                                BackgroundColor="Transparent"
+                                TextColor="#718096"
+                                Padding="8,4"
+                                MinimumHeightRequest="40" />
+                    </Grid>
+                    <SearchBar x:Name="currencySearch"
+                               Grid.Row="1"
+                               Placeholder="Search by code or currency name"
+                               TextChanged="CurrencySearchChanged"
+                               BackgroundColor="#F8FAFC"
+                               TextColor="#172033"
+                               PlaceholderColor="#94A3B8" />
+                    <CollectionView x:Name="currencyOptionsList"
+                                    Grid.Row="2"
+                                    SelectionMode="Single"
+                                    SelectionChanged="CurrencyOptionSelected">
+                        <CollectionView.EmptyView>
+                            <Label Text="No matching currencies"
+                                   Padding="16"
+                                   TextColor="#718096"
+                                   HorizontalTextAlignment="Center" />
+                        </CollectionView.EmptyView>
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate>
+                                <Grid ColumnDefinitions="Auto,*"
+                                      Padding="8,10"
+                                      MinimumHeightRequest="48">
+                                    <Image Source="{Binding FlagImageUrl}"
+                                           WidthRequest="36"
+                                           HeightRequest="24"
+                                           Aspect="AspectFill"
+                                           VerticalOptions="Center"
+                                           Margin="0,0,12,0" />
+                                    <Label Grid.Column="1"
+                                           Text="{Binding Label}"
+                                           FontSize="15"
+                                           TextColor="#172033"
+                                           VerticalTextAlignment="Center" />
+                                </Grid>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </Grid>
+            </Border>
+        </Grid>
+    </Grid>
+</ContentPage>
